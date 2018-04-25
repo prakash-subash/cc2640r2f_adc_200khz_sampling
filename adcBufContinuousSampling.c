@@ -38,7 +38,7 @@
 #include <unistd.h>
 
 /* Driver Header files */
-#include <ti/drivers/ADCBuf.h>
+#include "./driverlib/aux_adc.h"
 /* Example/Board Header files */
 #include "Board.h"
 
@@ -57,6 +57,7 @@ uint32_t microVoltBuffer[ADCBUFFERSIZE];
  */
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
+    uint_fast16_t i;
 
     /* Adjust raw adc values and convert them to microvolts */
     ADCBuf_adjustRawValues(handle, completedADCBuffer, ADCBUFFERSIZE,
@@ -64,14 +65,14 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     ADCBuf_convertAdjustedToMicroVolts(handle, completedChannel,
         completedADCBuffer, microVoltBuffer, ADCBUFFERSIZE);
 
+   for (i = 0; i < ADCBUFFERSIZE; i++) {
+     printf("%u,\n", (unsigned int)microVoltBuffer[i]);
+   }
+
+    ADCBuf_convert(handle, conversion, 1);
 }
 
-/*
- * Callback function to use the UART in callback mode. It does nothing.
- */
-void uartCallback(UART_Handle handle, void *buf, size_t count) {
-   return;
-}
+
 
 /*
  *  ======== mainThread ========
