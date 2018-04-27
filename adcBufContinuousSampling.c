@@ -39,6 +39,7 @@
 
 /* Driver Header files */
 #include "./driverlib/aux_adc.h"
+#include "./ADCBufCC26XX.h"
 /* Example/Board Header files */
 #include "Board.h"
 
@@ -65,9 +66,6 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     ADCBuf_convertAdjustedToMicroVolts(handle, completedChannel,
         completedADCBuffer, microVoltBuffer, ADCBUFFERSIZE);
 
-   for (i = 0; i < ADCBUFFERSIZE; i++) {
-     printf("%u,\n", (unsigned int)microVoltBuffer[i]);
-   }
 
     ADCBuf_convert(handle, conversion, 1);
 }
@@ -85,6 +83,8 @@ void *mainThread(void *arg0)
 
     /* Call driver init functions */
     ADCBuf_init();
+
+
 
 
     /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
@@ -108,6 +108,7 @@ void *mainThread(void *arg0)
         while(1);
     }
 
+    ADCBufCC26XX_control(adcBuf, ADCBufCC26XX_CMD_RELEASE_ADC_SEMAPHORE, NULL);
     /* Start converting. */
     if (ADCBuf_convert(adcBuf, &continuousConversion, 1) !=
         ADCBuf_STATUS_SUCCESS) {
