@@ -46,7 +46,6 @@
 #define ADCBUFFERSIZE    (1000)
 
 uint16_t sampleBufferOne[ADCBUFFERSIZE];
-uint16_t sampleBufferTwo[ADCBUFFERSIZE];
 uint32_t microVoltBuffer[ADCBUFFERSIZE];
 
 
@@ -66,6 +65,10 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     ADCBuf_convertAdjustedToMicroVolts(handle, completedChannel,
         completedADCBuffer, microVoltBuffer, ADCBUFFERSIZE);
 
+
+      for (i = 0; i < ADCBUFFERSIZE; i++) {
+         printf("%u,\n", (unsigned int)microVoltBuffer[i]);
+       }
 
     ADCBuf_convert(handle, conversion, 1);
 }
@@ -100,7 +103,7 @@ void *mainThread(void *arg0)
     continuousConversion.arg = NULL;
     continuousConversion.adcChannel = Board_ADCBUF0CHANNEL0;
     continuousConversion.sampleBuffer = sampleBufferOne;
-    continuousConversion.sampleBufferTwo = sampleBufferTwo;
+    continuousConversion.sampleBufferTwo = NULL;
     continuousConversion.samplesRequestedCount = ADCBUFFERSIZE;
 
     if (!adcBuf){
